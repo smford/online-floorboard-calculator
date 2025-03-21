@@ -7,6 +7,7 @@
     <style>
         #canvas-container {
             margin-top: 20px;
+            display: none; /* Initially hide the canvas container */
         }
         canvas {
             border: 1px solid black;
@@ -17,33 +18,48 @@
     <h1>Floorboard Calculator</h1>
     <form id="input-form">
         <label for="width">Width (in pixels):</label>
-        <input type="number" id="width" name="width" required>
+        <input type="number" id="width" name="width" value="850" required>
         <br>
         <label for="length">Length (in pixels):</label>
-        <input type="number" id="length" name="length" required>
+        <input type="number" id="length" name="length" value="350" required>
         <br>
         <label for="joist-spacing">Joist Spacing (in pixels):</label>
-        <input type="number" id="joist-spacing" name="joist-spacing" required>
+        <input type="number" id="joist-spacing" name="joist-spacing" value="100" required>
         <br>
-        <button type="button" onclick="drawFloor()">Draw Floor</button>
-    </form>
+        <label for="joist-direction">Joist Direction:</label>
+        <select id="joist-direction" name="joist-direction" required>
+            <option value="vertical">Vertical</option>
+            <option value="horizontal">Horizontal</option>
+        </select>
+        <br>
+        <button type="button" id="draw-button">Draw Floor</button>
+        </form>
 
-    <div id="canvas-container">
+        <div id="canvas-container">
         <canvas id="floor-canvas"></canvas>
-    </div>
+        </div>
 
-    <script>
+        <script>
+        document.getElementById('draw-button').addEventListener('click', drawFloor);
+
         function drawFloor() {
             const width = parseInt(document.getElementById('width').value);
             const length = parseInt(document.getElementById('length').value);
             const joistSpacing = parseInt(document.getElementById('joist-spacing').value);
+            const joistDirection = document.getElementById('joist-direction').value;
 
             if (isNaN(width) || isNaN(length) || isNaN(joistSpacing) || width <= 0 || length <= 0 || joistSpacing <= 0) {
-                alert('Please enter valid positive numbers for all fields.');
-                return;
+            alert('Please enter valid positive numbers for all fields.');
+            return;
             }
 
+            const canvasContainer = document.getElementById('canvas-container');
             const canvas = document.getElementById('floor-canvas');
+
+            // Ensure canvas container is visible
+            canvasContainer.style.display = 'block';
+
+            // Update canvas dimensions
             canvas.width = width;
             canvas.height = length;
 
@@ -60,11 +76,21 @@
             // Draw the joist lines
             ctx.strokeStyle = 'blue';
             ctx.lineWidth = 1;
-            for (let x = joistSpacing; x < width; x += joistSpacing) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, length);
-                ctx.stroke();
+
+            if (joistDirection === 'vertical') {
+                for (let x = joistSpacing; x < width; x += joistSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, length);
+                    ctx.stroke();
+                }
+            } else if (joistDirection === 'horizontal') {
+                for (let y = joistSpacing; y < length; y += joistSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
             }
         }
     </script>
