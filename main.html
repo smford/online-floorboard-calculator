@@ -125,17 +125,30 @@ function drawPanels() {
             const floorLength = canvas.height;
 
             // Draw panels
-            ctx.strokeStyle = 'black'; // Set panel border color to black
-            ctx.lineWidth = 4; // Set panel border width
-
-            ctx.fillStyle = 'rgba(0, 128, 0, 0.2)'; // Set panel infill color to transparent green
             ctx.strokeStyle = 'purple'; // Set panel border color to purple
             ctx.lineWidth = 2; // Set panel border width
+            ctx.font = '12px Arial'; // Set font for numbering
+
+            let panelNumber = 1; // Initialize panel number
 
             for (let y = 0; y + panelLength <= floorLength; y += panelLength) {
             for (let x = 0; x + panelWidth <= floorWidth; x += panelWidth) {
+                // Set panel infill color to transparent green
+                ctx.fillStyle = 'rgba(0, 128, 0, 0.2)';
                 ctx.fillRect(x, y, panelWidth, panelLength);
-                ctx.strokeRect(x, y, panelWidth, panelLength); // Draw the border for each panel
+            
+                // Draw the border for each panel
+                ctx.strokeRect(x, y, panelWidth, panelLength);
+            
+                // Draw pink background for panel number
+                ctx.fillStyle = 'pink';
+                ctx.fillRect(x + panelWidth / 2 - 10, y + panelLength / 2 - 10, 20, 20);
+
+                // Draw black text for panel number
+                ctx.fillStyle = 'black';
+                ctx.fillText(panelNumber, x + panelWidth / 2 - 5, y + panelLength / 2 + 5);
+
+                panelNumber++;
             }
             }
         }
