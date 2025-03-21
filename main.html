@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+function drawPanels() {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -39,8 +39,20 @@
         <canvas id="floor-canvas"></canvas>
         </div>
 
+        <div id="panel-input-container" style="display: none; margin-top: 20px;">
+        <h2>Panel Dimensions</h2>
+        <label for="panel-width">Panel Width (in pixels):</label>
+        <input type="number" id="panel-width" name="panel-width" value="60" required>
+        <br>
+        <label for="panel-length">Panel Length (in pixels):</label>
+        <input type="number" id="panel-length" name="panel-length" value="240" required>
+        <br>
+        <button type="button" id="draw-panels-button">Draw Panels</button>
+        </div>
+
         <script>
         document.getElementById('draw-button').addEventListener('click', drawFloor);
+        document.getElementById('draw-panels-button').addEventListener('click', drawPanels);
 
         function drawFloor() {
             const width = parseInt(document.getElementById('width').value);
@@ -57,11 +69,11 @@
             const canvas = document.getElementById('floor-canvas');
 
             // Ensure canvas container is visible
-            canvasContainer.style.display = 'block';
+            canvasContainer.style.display = 'block'; // Ensure the container is displayed
 
             // Update canvas dimensions
-            canvas.width = width;
-            canvas.height = length;
+            canvas.width = width > 0 ? width : 1; // Ensure valid canvas width
+            canvas.height = length > 0 ? length : 1; // Ensure valid canvas height
 
             const ctx = canvas.getContext('2d');
 
@@ -74,25 +86,51 @@
             ctx.strokeRect(0, 0, width, length);
 
             // Draw the joist lines
-            ctx.strokeStyle = 'blue';
+            ctx.strokeStyle = 'red'; // Change joist color to red
             ctx.lineWidth = 1;
 
             if (joistDirection === 'vertical') {
-                for (let x = joistSpacing; x < width; x += joistSpacing) {
-                    ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, length);
-                    ctx.stroke();
-                }
+            for (let x = joistSpacing; x < width; x += joistSpacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, length);
+                ctx.stroke();
+            }
             } else if (joistDirection === 'horizontal') {
-                for (let y = joistSpacing; y < length; y += joistSpacing) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(width, y);
-                    ctx.stroke();
-                }
+            for (let y = joistSpacing; y < length; y += joistSpacing) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            }
+
+            // Show the panel input container
+            document.getElementById('panel-input-container').style.display = 'block';
+        }
+
+        function drawPanels() {
+            const panelWidth = parseInt(document.getElementById('panel-width').value);
+            const panelLength = parseInt(document.getElementById('panel-length').value);
+
+            if (isNaN(panelWidth) || isNaN(panelLength) || panelWidth <= 0 || panelLength <= 0) {
+            alert('Please enter valid positive numbers for panel dimensions.');
+            return;
+            }
+
+            const canvas = document.getElementById('floor-canvas');
+            const ctx = canvas.getContext('2d');
+
+            const floorWidth = canvas.width;
+            const floorLength = canvas.height;
+
+            // Draw panels
+            ctx.fillStyle = 'green'; // Set panel color to green
+
+            for (let y = 0; y + panelLength <= floorLength; y += panelLength) {
+            for (let x = 0; x + panelWidth <= floorWidth; x += panelWidth) {
+                ctx.fillRect(x, y, panelWidth, panelLength);
+            }
             }
         }
-    </script>
-</body>
-</html>
+        </script>
