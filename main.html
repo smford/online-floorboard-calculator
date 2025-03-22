@@ -1,4 +1,3 @@
-function drawPanels() {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -69,11 +68,14 @@ function drawPanels() {
             const canvas = document.getElementById('floor-canvas');
 
             // Ensure canvas container is visible
-            canvasContainer.style.display = 'block'; // Ensure the container is displayed
+            canvasContainer.style.display = 'block';
+
+            // Add padding for dimensions
+            const padding = 40;
 
             // Update canvas dimensions
-            canvas.width = width > 0 ? width : 1; // Ensure valid canvas width
-            canvas.height = length > 0 ? length : 1; // Ensure valid canvas height
+            canvas.width = width + padding * 2;
+            canvas.height = length + padding * 2;
 
             const ctx = canvas.getContext('2d');
 
@@ -83,27 +85,44 @@ function drawPanels() {
             // Draw the outer box
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 2;
-            ctx.strokeRect(0, 0, width, length);
+            ctx.strokeRect(padding, padding, width, length);
 
             // Draw the joist lines
-            ctx.strokeStyle = 'red'; // Change joist color to red
+            ctx.strokeStyle = 'red';
             ctx.lineWidth = 1;
 
             if (joistDirection === 'vertical') {
-            for (let x = joistSpacing; x < width; x += joistSpacing) {
+            for (let x = padding + joistSpacing; x < padding + width; x += joistSpacing) {
                 ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, length);
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, padding + length);
                 ctx.stroke();
             }
             } else if (joistDirection === 'horizontal') {
-            for (let y = joistSpacing; y < length; y += joistSpacing) {
+            for (let y = padding + joistSpacing; y < padding + length; y += joistSpacing) {
                 ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
+                ctx.moveTo(padding, y);
+                ctx.lineTo(padding + width, y);
                 ctx.stroke();
             }
             }
+
+            // Add dimensions as text outside the main square
+            ctx.font = '16px Arial';
+            ctx.fillStyle = 'black';
+
+            // Width text
+            ctx.fillText(`${width}px`, padding + width / 2 - 20, padding - 10);
+
+            // Length text
+            ctx.save();
+            ctx.translate(padding - 30, padding + length / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(`${length}px`, 0, 0);
+            ctx.restore();
+
+            // Print dimensions to the console
+            console.log(`Width: ${width}px, Length: ${length}px`);
 
             // Show the panel input container
             document.getElementById('panel-input-container').style.display = 'block';
