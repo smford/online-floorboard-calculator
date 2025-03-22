@@ -64,6 +64,20 @@
         <input type="number" id="panel-length" name="panel-length" value="240" required>
         <br>
         <button type="button" id="draw-panels-button">Draw Panels</button>
+
+        <button type="button" id="swap-dimensions-button">Swap Vertical/Horizontal</button>
+        <script>
+            document.getElementById('swap-dimensions-button').addEventListener('click', function () {
+            const panelWidthInput = document.getElementById('panel-width');
+            const panelLengthInput = document.getElementById('panel-length');
+
+            // Swap the values
+            const temp = panelWidthInput.value;
+            panelWidthInput.value = panelLengthInput.value;
+            panelLengthInput.value = temp;
+            drawPanels()
+            });
+        </script>
         </div>
 
         <script>
