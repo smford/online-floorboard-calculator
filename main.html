@@ -15,6 +15,23 @@
 </head>
 <body>
     <h1>Floorboard Calculator</h1>
+    <label for="unit">Unit of Measurement:</label>
+    <select id="unit" name="unit">
+        <option value="mm">mm</option>
+        <option value="cm">cm</option>
+        <option value="m">m</option>
+    </select>
+    <script>
+        document.getElementById('unit').addEventListener('change', function () {
+            const unit = this.value;
+            const width = parseInt(document.getElementById('width').value);
+            const length = parseInt(document.getElementById('length').value);
+
+            const widthText = document.querySelector('canvas').getContext('2d').measureText(`${width}${unit}`);
+            const lengthText = document.querySelector('canvas').getContext('2d').measureText(`${length}${unit}`);
+            console.log(widthText, lengthText);
+        });
+    </script>
     <form id="input-form">
         <label for="width">Width (in pixels):</label>
         <input type="number" id="width" name="width" value="850" required>
@@ -23,7 +40,7 @@
         <input type="number" id="length" name="length" value="350" required>
         <br>
         <label for="joist-spacing">Joist Spacing (in pixels):</label>
-        <input type="number" id="joist-spacing" name="joist-spacing" value="100" required>
+        <input type="number" id="joist-spacing" name="joist-spacing" value="60" required>
         <br>
         <label for="joist-direction">Joist Direction:</label>
         <select id="joist-direction" name="joist-direction" required>
@@ -112,13 +129,14 @@
             ctx.fillStyle = 'black';
 
             // Width text
-            ctx.fillText(`${width}px`, padding + width / 2 - 20, padding - 10);
+            const unit = document.getElementById('unit').value;
+            ctx.fillText(`${width}${unit}`, padding + width / 2 - 20, padding - 10);
 
             // Length text
             ctx.save();
             ctx.translate(padding - 30, padding + length / 2);
             ctx.rotate(-Math.PI / 2);
-            ctx.fillText(`${length}px`, 0, 0);
+            ctx.fillText(`${length}${unit}`, 0, 10);
             ctx.restore();
 
             // Print dimensions to the console
