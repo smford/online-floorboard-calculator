@@ -140,18 +140,22 @@
             const canvas = document.getElementById('floor-canvas');
             const ctx = canvas.getContext('2d');
 
-            const floorWidth = canvas.width;
-            const floorLength = canvas.height;
+            const padding = 40; // Padding used in the floorplan
+            const floorWidth = canvas.width - padding * 2;
+            const floorLength = canvas.height - padding * 2;
 
-            // Draw panels
+            // Clear any existing panels
+            ctx.clearRect(padding, padding, floorWidth, floorLength);
+
+            // Draw panels inside the floorplan
             ctx.strokeStyle = 'purple'; // Set panel border color to purple
             ctx.lineWidth = 2; // Set panel border width
             ctx.font = '12px Arial'; // Set font for numbering
 
             let panelNumber = 1; // Initialize panel number
 
-            for (let y = 0; y + panelLength <= floorLength; y += panelLength) {
-            for (let x = 0; x + panelWidth <= floorWidth; x += panelWidth) {
+            for (let y = padding; y + panelLength <= padding + floorLength; y += panelLength) {
+            for (let x = padding; x + panelWidth <= padding + floorWidth; x += panelWidth) {
                 // Set panel infill color to transparent green
                 ctx.fillStyle = 'rgba(0, 128, 0, 0.2)';
                 ctx.fillRect(x, y, panelWidth, panelLength);
@@ -168,6 +172,29 @@
                 ctx.fillText(panelNumber, x + panelWidth / 2 - 5, y + panelLength / 2 + 5);
 
                 panelNumber++;
+            }
+            }
+
+            // Redraw the joist lines
+            const joistSpacing = parseInt(document.getElementById('joist-spacing').value);
+            const joistDirection = document.getElementById('joist-direction').value;
+
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 1;
+
+            if (joistDirection === 'vertical') {
+            for (let x = padding + joistSpacing; x < padding + floorWidth; x += joistSpacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, padding + floorLength);
+                ctx.stroke();
+            }
+            } else if (joistDirection === 'horizontal') {
+            for (let y = padding + joistSpacing; y < padding + floorLength; y += joistSpacing) {
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(padding + floorWidth, y);
+                ctx.stroke();
             }
             }
         }
