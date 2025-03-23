@@ -7,6 +7,14 @@
         #canvas-container {
             margin-top: 20px;
             display: none; /* Initially hide the canvas container */
+            max-width: 75%; /* Limit the canvas container to 75% of the screen width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        canvas {
+            width: 100%; /* Make the canvas responsive to the container */
+            height: auto; /* Maintain aspect ratio */
         }
         canvas {
             border: 1px solid black;
