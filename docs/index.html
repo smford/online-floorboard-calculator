@@ -22,49 +22,36 @@
     </style>
 </head>
 <body>
-    <h1>Floorboard Calculator</h1>
-    <label for="unit">Unit of Measurement:</label>
-    <select id="unit" name="unit">
-        <option value="mm">mm</option>
-        <option value="cm">cm</option>
-        <option value="m">m</option>
-    </select>
-    <script>
-        document.getElementById('unit').addEventListener('change', function () {
-            const unit = this.value;
-            const width = parseInt(document.getElementById('width').value);
-            const length = parseInt(document.getElementById('length').value);
-
-            const widthText = document.querySelector('canvas').getContext('2d').measureText(`${width}${unit}`);
-            const lengthText = document.querySelector('canvas').getContext('2d').measureText(`${length}${unit}`);
-            console.log(widthText, lengthText);
-        });
-    </script>
-    <form id="input-form">
-        <label for="width">Width:</label>
-        <input type="number" id="width" name="width" value="850" required>
-        <br>
-        <label for="length">Length:</label>
-        <input type="number" id="length" name="length" value="350" required>
-        <br>
-        <label for="joist-spacing">Joist Spacing:</label>
-        <input type="number" id="joist-spacing" name="joist-spacing" value="60" required>
-        <br>
-        <label for="joist-direction">Joist Direction:</label>
-        <select id="joist-direction" name="joist-direction" required>
-            <option value="vertical">Vertical</option>
-            <option value="horizontal">Horizontal</option>
-        </select>
-        <br>
-        <button type="button" id="draw-button">Draw Floor</button>
-        </form>
-
-        <div id="canvas-container">
-        <canvas id="floor-canvas"></canvas>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+        <div style="border: 2px solid black; padding: 10px; flex: 1; margin-right: 10px;">
+            <h2>Floor Dimensions</h2>
+            <label for="unit">Unit of Measurement:</label>
+            <select id="unit" name="unit">
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="m">m</option>
+            </select>
+            <form id="input-form">
+                <label for="width">Width:</label>
+                <input type="number" id="width" name="width" value="850" required>
+                <br>
+                <label for="length">Length:</label>
+                <input type="number" id="length" name="length" value="350" required>
+                <br>
+                <label for="joist-spacing">Joist Spacing:</label>
+                <input type="number" id="joist-spacing" name="joist-spacing" value="60" required>
+                <br>
+                <label for="joist-direction">Joist Direction:</label>
+                <select id="joist-direction" name="joist-direction" required>
+                    <option value="vertical">Vertical</option>
+                    <option value="horizontal">Horizontal</option>
+                </select>
+                <br>
+                <button type="button" id="draw-button">Draw Floor</button>
+            </form>
         </div>
-
-        <div id="panel-input-container" style="display: none; margin-top: 20px;">
-        <h2>Panel Dimensions</h2>
+        <div style="border: 2px solid black; padding: 10px; flex: 1; margin-right: 10px;">
+            <h2>Panel Dimensions</h2>
         <label for="panel-width">Panel Width:</label>
         <input type="number" id="panel-width" name="panel-width" value="60" required>
         <br>
@@ -86,6 +73,28 @@
             drawPanels()
             });
         </script>
+        </div>
+        <div style="border: 2px solid black; padding: 10px; flex: 1;">
+            <h2>Third Column</h2>
+        </div>
+    </div>
+    <hr>
+
+
+    <script>
+        document.getElementById('unit').addEventListener('change', function () {
+            const unit = this.value;
+            const width = parseInt(document.getElementById('width').value);
+            const length = parseInt(document.getElementById('length').value);
+
+            const widthText = document.querySelector('canvas').getContext('2d').measureText(`${width}${unit}`);
+            const lengthText = document.querySelector('canvas').getContext('2d').measureText(`${length}${unit}`);
+            console.log(widthText, lengthText);
+        });
+    </script>
+
+        <div id="canvas-container">
+        <canvas id="floor-canvas"></canvas>
         </div>
 
         <script>
