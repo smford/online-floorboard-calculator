@@ -75,7 +75,25 @@
         </script>
         </div>
         <div style="border: 2px solid black; padding: 10px; flex: 1;">
-            <h2>Third Column</h2>
+            <h2>Information</h2>
+            <table border="1" style="width: 100%; text-align: left;">
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                <tr id="floor-area-row">
+                    <td>Floor Area</td>
+                    <td></td>
+                </tr>
+                <tr id="number-of-panels-row">
+                    <td>Number of Panels</td>
+                    <td></td>
+                </tr>
+                <tr id="something-else-row">
+                    <td>Something Else</td>
+                    <td></td>
+                </tr>
+            </table>
         </div>
     </div>
     <hr>
@@ -173,6 +191,10 @@
             // Print dimensions to the console
             console.log(`Width: ${width}px, Length: ${length}px`);
 
+            // Calculate and display the floor area in the table
+            const floorArea = width * length;
+            const floorAreaRow = document.querySelector('#floor-area-row');
+            floorAreaRow.innerHTML = `<td>Floor Area</td><td>${floorArea} ${unit}²</td>`;
             // Show the panel input container
             document.getElementById('panel-input-container').style.display = 'block';
         }
@@ -246,5 +268,10 @@
                 ctx.stroke();
             }
             }
+
+            // Display the number of panels in the table
+            const numberOfPanelsCell = document.querySelector('#number-of-panels-row td:nth-child(2)');
+            numberOfPanelsCell.textContent = `${panelNumber - 1}`;
+
         }
         </script>
