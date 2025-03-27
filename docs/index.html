@@ -28,8 +28,11 @@
             <label for="unit">Unit of Measurement:</label>
             <select id="unit" name="unit">
                 <option value="mm">mm</option>
-                <option value="cm">cm</option>
+                <option value="cm" selected>cm</option>
                 <option value="m">m</option>
+                <option value="inch">inch</option>
+                <option value="feet">feet</option>
+                <option value="bananas">bananas</option>
             </select>
             <form id="input-form">
                 <label for="width">Width:</label>
@@ -57,6 +60,9 @@
         <br>
         <label for="panel-length">Panel Length:</label>
         <input type="number" id="panel-length" name="panel-length" value="240" required>
+        <br>
+        <label for="panel-length">Panel Cost:</label>
+        <input type="number" id="panel-cost" name="panel-cost" value="0" required>
         <br>
         <button type="button" id="draw-panels-button">Draw Panels</button>
 
@@ -89,8 +95,8 @@
                     <td>Number of Panels</td>
                     <td></td>
                 </tr>
-                <tr id="something-else-row">
-                    <td>Something Else</td>
+                <tr id="panel-cost-row">
+                    <td>Panel Cost</td>
                     <td></td>
                 </tr>
             </table>
@@ -272,6 +278,16 @@
             // Display the number of panels in the table
             const numberOfPanelsCell = document.querySelector('#number-of-panels-row td:nth-child(2)');
             numberOfPanelsCell.textContent = `${panelNumber - 1}`;
+
+            // Calculate and display the total cost of the panels
+            const panelCost = parseFloat(document.getElementById('panel-cost').value);
+            const panelCostCell = document.querySelector('#panel-cost-row td:nth-child(2)');
+            if (!isNaN(panelCost) && panelCost > 0) {
+                const totalCost = (panelNumber - 1) * panelCost;
+                panelCostCell.textContent = `${totalCost.toFixed(2)}`;
+            } else {
+                panelCostCell.textContent = ''; // Leave blank if cost is zero or invalid
+            }
 
         }
         </script>
