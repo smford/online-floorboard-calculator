@@ -26,6 +26,40 @@
         <div style="border: 2px solid black; padding: 10px; flex: 1; margin-right: 10px;">
             <h2>Floor Dimensions</h2>
             <label for="unit">Unit of Measurement:</label>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.getElementById('unit').addEventListener('change', function () {
+                        const unit = this.value;
+
+                        const conversionRates = {
+                            mm: 1,
+                            cm: 10,
+                            m: 1000,
+                            inch: 25.4,
+                            feet: 304.8,
+                            bananas: 180 // Example conversion rate for "bananas"
+                        };
+
+                        const currentUnit = document.getElementById('unit').dataset.currentUnit || 'cm';
+                        const currentRate = conversionRates[currentUnit];
+                        const newRate = conversionRates[unit];
+
+                        const fields = ['width', 'length', 'joist-spacing', 'panel-width', 'panel-length'];
+
+                        fields.forEach(fieldId => {
+                            const field = document.getElementById(fieldId);
+                            const valueInCurrentUnit = parseFloat(field.value) * currentRate;
+                            const valueInNewUnit = valueInCurrentUnit / newRate;
+                            field.value = valueInNewUnit.toFixed(2); // Update the field with the converted value
+                        });
+
+                        // Update the current unit after conversion
+                        document.getElementById('unit').dataset.currentUnit = unit;
+                    });
+                });
+
+                // Remove redundant code block as it duplicates functionality
+            </script>
             <select id="unit" name="unit">
                 <option value="mm">mm</option>
                 <option value="cm" selected>cm</option>
@@ -134,14 +168,28 @@
         document.getElementById('draw-panels-button').addEventListener('click', drawPanels);
 
         function drawFloor() {
-            const width = parseInt(document.getElementById('width').value);
-            const length = parseInt(document.getElementById('length').value);
-            const joistSpacing = parseInt(document.getElementById('joist-spacing').value);
+            const width = parseFloat(document.getElementById('width').value);
+            const length = parseFloat(document.getElementById('length').value);
+            const joistSpacing = parseFloat(document.getElementById('joist-spacing').value);
             const joistDirection = document.getElementById('joist-direction').value;
 
-            if (isNaN(width) || isNaN(length) || isNaN(joistSpacing) || width <= 0 || length <= 0 || joistSpacing <= 0) {
-            alert('Please enter valid positive numbers for all fields.');
-            return;
+            const errors = [];
+            console.log('Joist Spacing value:', joistSpacing); // Log the value of joistSpacing for inspection
+            if (isNaN(parseFloat(width)) || parseFloat(width) <= 0) {
+                errors.push('Width');
+            }
+            if (isNaN(parseFloat(length)) || parseFloat(length) <= 0) {
+                errors.push('Length');
+            }
+
+            const trimmedJoistSpacing = joistSpacing; // No need to trim as joistSpacing is already a number
+            if (isNaN(parseFloat(trimmedJoistSpacing)) || parseFloat(trimmedJoistSpacing) <= 0) {
+                errors.push('Joist Spacing');
+            }
+
+            if (errors.length > 0) {
+                alert(`Please enter valid positive numbers for the following fields: ${errors.join(', ')}`);
+                return;
             }
 
             const canvasContainer = document.getElementById('canvas-container');
@@ -210,12 +258,12 @@
             const floorAreaRow = document.querySelector('#floor-area-row');
             floorAreaRow.innerHTML = `<td>Floor Area</td><td>${floorArea} ${unit}²</td>`;
             // Show the panel input container
-            document.getElementById('panel-input-container').style.display = 'block';
+            // document.getElementById('panel-input-container').style.display = 'block'; // Removed as the element does not exist
         }
 
         function drawPanels() {
-            const panelWidth = parseInt(document.getElementById('panel-width').value);
-            const panelLength = parseInt(document.getElementById('panel-length').value);
+            const panelWidth = parseFloat(document.getElementById('panel-width').value);
+            const panelLength = parseFloat(document.getElementById('panel-length').value);
 
             if (isNaN(panelWidth) || isNaN(panelLength) || panelWidth <= 0 || panelLength <= 0) {
             alert('Please enter valid positive numbers for panel dimensions.');
