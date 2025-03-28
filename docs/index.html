@@ -95,6 +95,10 @@
                     <td>Number of Panels</td>
                     <td></td>
                 </tr>
+                <tr id="number-of-cut-panels-row">
+                    <td>Number of Cut Panels</td>
+                    <td></td>
+                </tr>
                 <tr id="panel-cost-row">
                     <td>Panel Cost</td>
                     <td></td>
@@ -231,22 +235,29 @@
 
             let panelNumber = 1; // Initialize panel number
 
-            for (let y = padding; y + panelLength <= padding + floorLength; y += panelLength) {
-            for (let x = padding; x + panelWidth <= padding + floorWidth; x += panelWidth) {
-                // Set panel infill color to transparent green
-                ctx.fillStyle = 'rgba(0, 128, 0, 0.2)';
-                ctx.fillRect(x, y, panelWidth, panelLength);
-            
+            for (let y = padding; y < padding + floorLength; y += panelLength) {
+            for (let x = padding; x < padding + floorWidth; x += panelWidth) {
+                const panelActualWidth = Math.min(panelWidth, padding + floorWidth - x);
+                const panelActualLength = Math.min(panelLength, padding + floorLength - y);
+
+                // Set panel infill color
+                if (panelActualWidth < panelWidth || panelActualLength < panelLength) {
+                ctx.fillStyle = 'rgba(255, 192, 203, 0.5)'; // Transparent pink for panels extending past the floor
+                } else {
+                ctx.fillStyle = 'rgba(0, 128, 0, 0.2)'; // Transparent green for regular panels
+                }
+                ctx.fillRect(x, y, panelActualWidth, panelActualLength);
+
                 // Draw the border for each panel
-                ctx.strokeRect(x, y, panelWidth, panelLength);
-            
+                ctx.strokeRect(x, y, panelActualWidth, panelActualLength);
+
                 // Draw pink background for panel number
                 ctx.fillStyle = 'pink';
-                ctx.fillRect(x + panelWidth / 2 - 10, y + panelLength / 2 - 10, 20, 20);
+                ctx.fillRect(x + panelActualWidth / 2 - 10, y + panelActualLength / 2 - 10, 20, 20);
 
                 // Draw black text for panel number
                 ctx.fillStyle = 'black';
-                ctx.fillText(panelNumber, x + panelWidth / 2 - 5, y + panelLength / 2 + 5);
+                ctx.fillText(panelNumber, x + panelActualWidth / 2 - 5, y + panelActualLength / 2 + 5);
 
                 panelNumber++;
             }
@@ -283,11 +294,10 @@
             const panelCost = parseFloat(document.getElementById('panel-cost').value);
             const panelCostCell = document.querySelector('#panel-cost-row td:nth-child(2)');
             if (!isNaN(panelCost) && panelCost > 0) {
-                const totalCost = (panelNumber - 1) * panelCost;
-                panelCostCell.textContent = `${totalCost.toFixed(2)}`;
+            const totalCost = (panelNumber - 1) * panelCost;
+            panelCostCell.textContent = `${totalCost.toFixed(2)}`;
             } else {
-                panelCostCell.textContent = ''; // Leave blank if cost is zero or invalid
+            panelCostCell.textContent = ''; // Leave blank if cost is zero or invalid
             }
-
         }
         </script>
