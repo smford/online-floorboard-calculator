@@ -91,8 +91,12 @@
                     <td>Floor Area</td>
                     <td></td>
                 </tr>
-                <tr id="number-of-panels-row">
-                    <td>Number of Panels</td>
+                <tr id="total-number-of-panels-row">
+                    <td>Total Number of Panels</td>
+                    <td></td>
+                </tr>
+                <tr id="number-of-whole-panels-row">
+                    <td>Number of Whole Panels</td>
                     <td></td>
                 </tr>
                 <tr id="number-of-cut-panels-row">
@@ -235,6 +239,9 @@
 
             let panelNumber = 1; // Initialize panel number
 
+            let wholePanel = 0;
+            let cutPanel = 0;
+
             for (let y = padding; y < padding + floorLength; y += panelLength) {
             for (let x = padding; x < padding + floorWidth; x += panelWidth) {
                 const panelActualWidth = Math.min(panelWidth, padding + floorWidth - x);
@@ -243,8 +250,10 @@
                 // Set panel infill color
                 if (panelActualWidth < panelWidth || panelActualLength < panelLength) {
                 ctx.fillStyle = 'rgba(255, 192, 203, 0.5)'; // Transparent pink for panels extending past the floor
+                cutPanel++;
                 } else {
                 ctx.fillStyle = 'rgba(0, 128, 0, 0.2)'; // Transparent green for regular panels
+                wholePanel++;
                 }
                 ctx.fillRect(x, y, panelActualWidth, panelActualLength);
 
@@ -287,8 +296,16 @@
             }
 
             // Display the number of panels in the table
-            const numberOfPanelsCell = document.querySelector('#number-of-panels-row td:nth-child(2)');
+            const numberOfPanelsCell = document.querySelector('#total-number-of-panels-row td:nth-child(2)');
             numberOfPanelsCell.textContent = `${panelNumber - 1}`;
+
+            // Display the number of whole panels in the table
+            const numberOfWholePanelsCell = document.querySelector('#number-of-whole-panels-row td:nth-child(2)');
+            numberOfWholePanelsCell.textContent = `${wholePanel}`;
+
+            // Display the number of cut panels in the table
+            const numberOfCutPanelsCell = document.querySelector('#number-of-cut-panels-row td:nth-child(2)');
+            numberOfCutPanelsCell.textContent = `${cutPanel}`;
 
             // Calculate and display the total cost of the panels
             const panelCost = parseFloat(document.getElementById('panel-cost').value);
