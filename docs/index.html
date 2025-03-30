@@ -257,22 +257,20 @@
             }
 
             // Add dimensions as text outside the main square
-            ctx.font = '16px Arial';
+            ctx.font = `${16 / scaleFactor}px Arial`;
             ctx.fillStyle = 'black';
 
 
             const unit = document.getElementById('unit').value;
-            /*
             // Width text
-            ctx.fillText(`${width}${unit}`, padding + width / 2 - 20, padding - 10);
+            ctx.fillText(`${width}${unit}`, padding + width / 2 - ctx.measureText(`${width}${unit}`).width / 2, padding - 10);
 
             // Length text
             ctx.save();
             ctx.translate(padding - 30, padding + length / 2);
             ctx.rotate(-Math.PI / 2);
-            ctx.fillText(`${length}${unit}`, 0, 10);
+            ctx.fillText(`${length}${unit}`, -ctx.measureText(`${length}${unit}`).width / 2, 10);
             ctx.restore();
-            */
 
             // Print dimensions to the console
             console.log(`Width: ${width}px, Length: ${length}px`);
