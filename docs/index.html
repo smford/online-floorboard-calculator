@@ -70,13 +70,13 @@
             </select>
             <form id="input-form">
                 <label for="width">Width:</label>
-                <input type="number" id="width" name="width" value="850" required>
+                <input type="number" id="width" name="width" value="85" required>
                 <br>
                 <label for="length">Length:</label>
-                <input type="number" id="length" name="length" value="350" required>
+                <input type="number" id="length" name="length" value="35" required>
                 <br>
                 <label for="joist-spacing">Joist Spacing:</label>
-                <input type="number" id="joist-spacing" name="joist-spacing" value="60" required>
+                <input type="number" id="joist-spacing" name="joist-spacing" value="6" required>
                 <br>
                 <label for="joist-direction">Joist Direction:</label>
                 <select id="joist-direction" name="joist-direction" required>
@@ -90,10 +90,10 @@
         <div style="border: 2px solid black; padding: 10px; flex: 1; margin-right: 10px;">
             <h2>Panel Dimensions</h2>
         <label for="panel-width">Panel Width:</label>
-        <input type="number" id="panel-width" name="panel-width" value="60" required>
+        <input type="number" id="panel-width" name="panel-width" value="6" required>
         <br>
         <label for="panel-length">Panel Length:</label>
-        <input type="number" id="panel-length" name="panel-length" value="240" required>
+        <input type="number" id="panel-length" name="panel-length" value="24" required>
         <br>
         <label for="panel-length">Panel Cost:</label>
         <input type="number" id="panel-cost" name="panel-cost" value="0" required>
@@ -238,15 +238,16 @@
 
             // Draw the joist lines
             ctx.strokeStyle = 'red';
-            ctx.lineWidth = 1/scaleFactor;
+            //ctx.lineWidth = 1/scaleFactor;
+            ctx.lineWidth = 1 / scaleFactor;
 
             if (joistDirection === 'vertical') {
             for (let x = joistSpacing; x < width; x += joistSpacing) {
                 ctx.beginPath();
                 //ctx.moveTo((padding /scaleFactor)+ x, padding / scaleFactor);
                 //ctx.lineTo((padding /scaleFactor)+ x, (padding / scaleFactor) + length);
-                ctx.moveTo((padding)+ x, padding);
-                ctx.lineTo((padding)+ x, (padding) + length);
+                ctx.moveTo(padding + x, padding);
+                ctx.lineTo(padding + x, padding + length);
                 ctx.stroke();
             }
             } else if (joistDirection === 'horizontal') {
@@ -254,8 +255,8 @@
                 ctx.beginPath();
                 //ctx.moveTo(padding / scaleFactor, (padding /scaleFactor)+ y);
                 //ctx.lineTo((padding / scaleFactor) + width, (padding/scaleFactor) + y);
-                ctx.moveTo(padding , (padding )+ y);
-                ctx.lineTo((padding ) + width, (padding) + y);
+                ctx.moveTo(padding, padding + y);
+                ctx.lineTo(padding + width, padding + y);
                 ctx.stroke();
             }
             }
@@ -310,8 +311,8 @@
 
             // Draw panels inside the floorplan
             ctx.strokeStyle = 'purple'; // Set panel border color to purple
-            ctx.lineWidth = 2; // Set panel border width
-            ctx.font = '12px Arial'; // Set font for numbering
+            ctx.lineWidth = 2 / scaleFactor; // Set panel border width
+            ctx.font = `${12 / scaleFactor}px Arial`; // Scale font size based on scaleFactor
 
             let panelNumber = 1; // Initialize panel number
 
@@ -341,11 +342,23 @@
 
                 // Draw pink background for panel number
                 ctx.fillStyle = 'orange';
-                ctx.fillRect(x + +padding+panelActualWidth / 2 - 10, y + padding+panelActualLength / 2 - 10, 20, 20);
+                //ctx.fillRect(x + +padding+panelActualWidth / 2 - 10, y + padding+panelActualLength / 2 - 10, 20, 20);
+                ctx.fillRect(
+                    x + padding + panelActualWidth / 2 - (10 / scaleFactor),
+                    y + padding + panelActualLength / 2 - (10 / scaleFactor),
+                    20 / scaleFactor,
+                    20 / scaleFactor
+                );
 
                 // Draw black text for panel number
                 ctx.fillStyle = 'black';
-                ctx.fillText(panelNumber, x +padding+ panelActualWidth / 2 - 5, y + padding+panelActualLength / 2 + 5);
+                //ctx.fillText(panelNumber, x +padding+ panelActualWidth / 2 - 5, y + padding+panelActualLength / 2 + 5);
+                const textWidth = ctx.measureText(panelNumber).width;
+                const textHeight = 10 / scaleFactor; // Approximate text height
+                ctx.fillText(panelNumber, 
+                    x + padding + panelActualWidth / 2 - textWidth / 2,
+                    y + padding + panelActualLength / 2 + textHeight / 2
+                );
 
                 panelNumber++;
             }
