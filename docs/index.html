@@ -372,40 +372,6 @@
             }
             */
 
-            /* latest joist draw code
-            // Draw the joist lines
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 1/scaleFactor;
-
-            const joistSpacing = parseFloat(document.getElementById('joist-spacing').value);
-            const joistDirection = document.getElementById('joist-direction').value;
-
-            // Retrieve width and length values from input fields
-            const width = parseFloat(document.getElementById('width').value);
-            const length = parseFloat(document.getElementById('length').value);
-
-            if (joistDirection === 'vertical') {
-            for (let x = joistSpacing; x < width; x += joistSpacing) {
-                console.log(`joist x interation: ${x}`);
-                ctx.beginPath();
-                //ctx.moveTo((padding /scaleFactor)+ x, padding / scaleFactor);
-                //ctx.lineTo((padding /scaleFactor)+ x, (padding / scaleFactor) + length);
-                ctx.moveTo((padding )+ x+40, padding );
-                ctx.lineTo((padding )+ x+40, (padding ) + length);
-                ctx.stroke();
-            }
-            } else if (joistDirection === 'horizontal') {
-            for (let y = joistSpacing; y < length; y += joistSpacing) {
-                console.log(`joist y interation: ${y}`);
-                ctx.beginPath();
-                ctx.moveTo(padding / scaleFactor, (padding /scaleFactor)+ y);
-                ctx.lineTo((padding / scaleFactor) + width, (padding/scaleFactor) + y);
-                ctx.stroke();
-            }
-            }
-            */
-
-
             // Display the number of panels in the table
             const numberOfPanelsCell = document.querySelector('#total-number-of-panels-row td:nth-child(2)');
             numberOfPanelsCell.textContent = `${panelNumber - 1}`;
