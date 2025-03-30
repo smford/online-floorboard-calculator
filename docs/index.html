@@ -26,6 +26,40 @@
         <div style="border: 2px solid black; padding: 10px; flex: 1; margin-right: 10px;">
             <h2>Floor Dimensions</h2>
             <label for="unit">Unit of Measurement:</label>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.getElementById('unit').addEventListener('change', function () {
+                        const unit = this.value;
+
+                        const conversionRates = {
+                            mm: 1,
+                            cm: 10,
+                            m: 1000,
+                            inch: 25.4,
+                            feet: 304.8,
+                            bananas: 180 // Example conversion rate for "bananas"
+                        };
+
+                        const currentUnit = document.getElementById('unit').dataset.currentUnit || 'cm';
+                        const currentRate = conversionRates[currentUnit];
+                        const newRate = conversionRates[unit];
+
+                        const fields = ['width', 'length', 'joist-spacing', 'panel-width', 'panel-length'];
+
+                        fields.forEach(fieldId => {
+                            const field = document.getElementById(fieldId);
+                            const valueInCurrentUnit = parseFloat(field.value) * currentRate;
+                            const valueInNewUnit = valueInCurrentUnit / newRate;
+                            field.value = valueInNewUnit.toFixed(2); // Update the field with the converted value
+                        });
+
+                        // Update the current unit after conversion
+                        document.getElementById('unit').dataset.currentUnit = unit;
+                    });
+                });
+
+                // Remove redundant code block as it duplicates functionality
+            </script>
             <select id="unit" name="unit">
                 <option value="mm">mm</option>
                 <option value="cm" selected>cm</option>
@@ -36,13 +70,13 @@
             </select>
             <form id="input-form">
                 <label for="width">Width:</label>
-                <input type="number" id="width" name="width" value="850" required>
+                <input type="number" id="width" name="width" value="85" required>
                 <br>
                 <label for="length">Length:</label>
-                <input type="number" id="length" name="length" value="350" required>
+                <input type="number" id="length" name="length" value="35" required>
                 <br>
                 <label for="joist-spacing">Joist Spacing:</label>
-                <input type="number" id="joist-spacing" name="joist-spacing" value="60" required>
+                <input type="number" id="joist-spacing" name="joist-spacing" value="6" required>
                 <br>
                 <label for="joist-direction">Joist Direction:</label>
                 <select id="joist-direction" name="joist-direction" required>
@@ -56,10 +90,10 @@
         <div style="border: 2px solid black; padding: 10px; flex: 1; margin-right: 10px;">
             <h2>Panel Dimensions</h2>
         <label for="panel-width">Panel Width:</label>
-        <input type="number" id="panel-width" name="panel-width" value="60" required>
+        <input type="number" id="panel-width" name="panel-width" value="6" required>
         <br>
         <label for="panel-length">Panel Length:</label>
-        <input type="number" id="panel-length" name="panel-length" value="240" required>
+        <input type="number" id="panel-length" name="panel-length" value="24" required>
         <br>
         <label for="panel-length">Panel Cost:</label>
         <input type="number" id="panel-cost" name="panel-cost" value="0" required>
@@ -68,21 +102,24 @@
 
         <button type="button" id="swap-dimensions-button">Swap Vertical/Horizontal</button>
         <script>
+            // Add event listener to the swap button
+            // This function swaps the values of the panel width and length inputs
+            // and redraws the panels
             document.getElementById('swap-dimensions-button').addEventListener('click', function () {
-            const panelWidthInput = document.getElementById('panel-width');
-            const panelLengthInput = document.getElementById('panel-length');
+                const panelWidthInput = document.getElementById('panel-width');
+                const panelLengthInput = document.getElementById('panel-length');
 
-            // Swap the values
-            const temp = panelWidthInput.value;
-            panelWidthInput.value = panelLengthInput.value;
-            panelLengthInput.value = temp;
-            drawPanels()
+                // Swap the values
+                const temp = panelWidthInput.value;
+                panelWidthInput.value = panelLengthInput.value;
+                panelLengthInput.value = temp;
+                drawPanels();
             });
         </script>
         </div>
         <div style="border: 2px solid black; padding: 10px; flex: 1;">
             <h2>Information</h2>
-            <table border="1" style="width: 100%; text-align: left;">
+            <table border="0" style="width: 100%; text-align: left;">
                 <tr>
                     <th>Property</th>
                     <th>Value</th>
@@ -133,15 +170,35 @@
         document.getElementById('draw-button').addEventListener('click', drawFloor);
         document.getElementById('draw-panels-button').addEventListener('click', drawPanels);
 
+        let scaleFactor; // Declare scaleFactor globally to share between functions
+        let padding = 40; // Padding for the outside of the canvas
+        //const joistSpacing = parseFloat(document.getElementById('joist-spacing').value);
+        //const joistDirection = document.getElementById('joist-direction').value;
+
         function drawFloor() {
-            const width = parseInt(document.getElementById('width').value);
-            const length = parseInt(document.getElementById('length').value);
-            const joistSpacing = parseInt(document.getElementById('joist-spacing').value);
+            // Get the values from the input fields
+            const width = parseFloat(document.getElementById('width').value);
+            const length = parseFloat(document.getElementById('length').value);
+            const joistSpacing = parseFloat(document.getElementById('joist-spacing').value);
             const joistDirection = document.getElementById('joist-direction').value;
 
-            if (isNaN(width) || isNaN(length) || isNaN(joistSpacing) || width <= 0 || length <= 0 || joistSpacing <= 0) {
-            alert('Please enter valid positive numbers for all fields.');
-            return;
+            const errors = [];
+            console.log('Joist Spacing value:', joistSpacing); // Log the value of joistSpacing for inspection
+            if (isNaN(parseFloat(width)) || parseFloat(width) <= 0) {
+                errors.push('Width');
+            }
+            if (isNaN(parseFloat(length)) || parseFloat(length) <= 0) {
+                errors.push('Length');
+            }
+
+            const trimmedJoistSpacing = joistSpacing; // No need to trim as joistSpacing is already a number
+            if (isNaN(parseFloat(trimmedJoistSpacing)) || parseFloat(trimmedJoistSpacing) <= 0) {
+                errors.push('Joist Spacing');
+            }
+
+            if (errors.length > 0) {
+                alert(`Please enter valid positive numbers for the following fields: ${errors.join(', ')}`);
+                return;
             }
 
             const canvasContainer = document.getElementById('canvas-container');
@@ -150,39 +207,56 @@
             // Ensure canvas container is visible
             canvasContainer.style.display = 'block';
 
-            // Add padding for dimensions
-            const padding = 40;
+            const pageWidth = document.body.clientWidth * 0.75; // 75% of the page width
+            scaleFactor = pageWidth / (width + padding * 2); // Calculate scale factor
+            console.log(`Scale Factor: ${scaleFactor}`); // Log scale factor for debugging
+            //canvas.width = width * scaleFactor + padding * 2; // Scale width correctly
+            //canvas.height = length * scaleFactor + padding * 2; // Scale height correctly
+            canvas.width = (width + (padding * 2)) * scaleFactor; // Scale width correctly
+            canvas.height = (length + (padding * 2)) * scaleFactor; // Scale height correctly
 
-            // Update canvas dimensions
-            canvas.width = width + padding * 2;
-            canvas.height = length + padding * 2;
+            console.log(`Canvas Width: ${canvas.width}, Canvas Height: ${canvas.height}`); // Log canvas dimensions
 
             const ctx = canvas.getContext('2d');
 
             // Clear the canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            console.log(`Clearing canvas before scale ${canvas.width}, ${canvas.height}`); // Log canvas clearing
+            // Scale the drawing context
+            ctx.scale(scaleFactor, scaleFactor);
+            console.log(`Scaling context by factor: ${scaleFactor}: ${scaleFactor*canvas.width}x${scaleFactor*canvas.height}`); // Log scaling factor
+
 
             // Draw the outer box
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 2 / scaleFactor; // Adjust line width for scaling
+            //ctx.strokeRect(padding / scaleFactor, padding / scaleFactor, width/scaleFactor, length/scaleFactor);
+            //ctx.strokeRect(padding / scaleFactor, padding / scaleFactor, width, length);
             ctx.strokeRect(padding, padding, width, length);
+            console.log(`Drawing outer floor box scaled at: ${padding / scaleFactor}, ${padding / scaleFactor}, ${width}, ${length}`);
+            console.log(`Drawing outer floor box non-scaled at: ${padding}, ${padding}, ${width}, ${length}`);
 
             // Draw the joist lines
             ctx.strokeStyle = 'red';
-            ctx.lineWidth = 1;
+            //ctx.lineWidth = 1/scaleFactor;
+            ctx.lineWidth = 1 / scaleFactor;
 
             if (joistDirection === 'vertical') {
-            for (let x = padding + joistSpacing; x < padding + width; x += joistSpacing) {
+            for (let x = joistSpacing; x < width; x += joistSpacing) {
                 ctx.beginPath();
-                ctx.moveTo(x, padding);
-                ctx.lineTo(x, padding + length);
+                //ctx.moveTo((padding /scaleFactor)+ x, padding / scaleFactor);
+                //ctx.lineTo((padding /scaleFactor)+ x, (padding / scaleFactor) + length);
+                ctx.moveTo(padding + x, padding);
+                ctx.lineTo(padding + x, padding + length);
                 ctx.stroke();
             }
             } else if (joistDirection === 'horizontal') {
-            for (let y = padding + joistSpacing; y < padding + length; y += joistSpacing) {
+            for (let y = joistSpacing; y < length; y += joistSpacing) {
                 ctx.beginPath();
-                ctx.moveTo(padding, y);
-                ctx.lineTo(padding + width, y);
+                //ctx.moveTo(padding / scaleFactor, (padding /scaleFactor)+ y);
+                //ctx.lineTo((padding / scaleFactor) + width, (padding/scaleFactor) + y);
+                ctx.moveTo(padding, padding + y);
+                ctx.lineTo(padding + width, padding + y);
                 ctx.stroke();
             }
             }
@@ -191,8 +265,10 @@
             ctx.font = '16px Arial';
             ctx.fillStyle = 'black';
 
-            // Width text
+
             const unit = document.getElementById('unit').value;
+            /*
+            // Width text
             ctx.fillText(`${width}${unit}`, padding + width / 2 - 20, padding - 10);
 
             // Length text
@@ -201,6 +277,7 @@
             ctx.rotate(-Math.PI / 2);
             ctx.fillText(`${length}${unit}`, 0, 10);
             ctx.restore();
+            */
 
             // Print dimensions to the console
             console.log(`Width: ${width}px, Length: ${length}px`);
@@ -209,43 +286,45 @@
             const floorArea = width * length;
             const floorAreaRow = document.querySelector('#floor-area-row');
             floorAreaRow.innerHTML = `<td>Floor Area</td><td>${floorArea} ${unit}²</td>`;
-            // Show the panel input container
-            document.getElementById('panel-input-container').style.display = 'block';
+            
         }
 
         function drawPanels() {
-            const panelWidth = parseInt(document.getElementById('panel-width').value);
-            const panelLength = parseInt(document.getElementById('panel-length').value);
+            const panelWidth = parseFloat(document.getElementById('panel-width').value);
+            const panelLength = parseFloat(document.getElementById('panel-length').value);
+
+            // Calculate scaleFactor based on canvas dimensions and floor dimensions
+            const canvas = document.getElementById('floor-canvas');
+            //const padding = 40; // Padding used in the floorplan
+
 
             if (isNaN(panelWidth) || isNaN(panelLength) || panelWidth <= 0 || panelLength <= 0) {
-            alert('Please enter valid positive numbers for panel dimensions.');
-            return;
+                alert('Please enter valid positive numbers for panel dimensions.');
+                return;
             }
-
-            const canvas = document.getElementById('floor-canvas');
             const ctx = canvas.getContext('2d');
 
-            const padding = 40; // Padding used in the floorplan
-            const floorWidth = canvas.width - padding * 2;
-            const floorLength = canvas.height - padding * 2;
-
-            // Clear any existing panels
-            ctx.clearRect(padding, padding, floorWidth, floorLength);
+            const floorWidth = (canvas.width / scaleFactor) - padding * 2; // Use global scaleFactor
+            const floorLength = (canvas.height / scaleFactor) - padding * 2; // Use global scaleFactor
+            // Redraw the floorplan before drawing panels
+            drawFloor();
 
             // Draw panels inside the floorplan
             ctx.strokeStyle = 'purple'; // Set panel border color to purple
-            ctx.lineWidth = 2; // Set panel border width
-            ctx.font = '12px Arial'; // Set font for numbering
+            ctx.lineWidth = 2 / scaleFactor; // Set panel border width
+            ctx.font = `${12 / scaleFactor}px Arial`; // Scale font size based on scaleFactor
 
             let panelNumber = 1; // Initialize panel number
 
             let wholePanel = 0;
             let cutPanel = 0;
+            for (let y = 0; y < floorLength; y += panelLength) {
+                //console.log(`panel y interation: ${y}`);
+            for (let x = 0; x < floorWidth; x += panelWidth) {
+                //console.log(`${x},${y} panel iteration`);
+                const panelActualWidth = Math.min(panelWidth, floorWidth - x);
+                const panelActualLength = Math.min(panelLength, floorLength - y);
 
-            for (let y = padding; y < padding + floorLength; y += panelLength) {
-            for (let x = padding; x < padding + floorWidth; x += panelWidth) {
-                const panelActualWidth = Math.min(panelWidth, padding + floorWidth - x);
-                const panelActualLength = Math.min(panelLength, padding + floorLength - y);
 
                 // Set panel infill color
                 if (panelActualWidth < panelWidth || panelActualLength < panelLength) {
@@ -255,25 +334,39 @@
                 ctx.fillStyle = 'rgba(0, 128, 0, 0.2)'; // Transparent green for regular panels
                 wholePanel++;
                 }
-                ctx.fillRect(x, y, panelActualWidth, panelActualLength);
+                ctx.fillRect((x+padding), y+padding, panelActualWidth, panelActualLength);
+                console.log(`panelnum: ${panelNumber} panelx: ${x+padding}, panel y: ${y+padding}, panel width: ${panelActualWidth}, panel length: ${panelActualLength}`);
 
                 // Draw the border for each panel
-                ctx.strokeRect(x, y, panelActualWidth, panelActualLength);
+                ctx.strokeRect(x+padding, y+padding, panelActualWidth, panelActualLength);
 
                 // Draw pink background for panel number
-                ctx.fillStyle = 'pink';
-                ctx.fillRect(x + panelActualWidth / 2 - 10, y + panelActualLength / 2 - 10, 20, 20);
+                ctx.fillStyle = 'orange';
+                //ctx.fillRect(x + +padding+panelActualWidth / 2 - 10, y + padding+panelActualLength / 2 - 10, 20, 20);
+                ctx.fillRect(
+                    x + padding + panelActualWidth / 2 - (10 / scaleFactor),
+                    y + padding + panelActualLength / 2 - (10 / scaleFactor),
+                    20 / scaleFactor,
+                    20 / scaleFactor
+                );
 
                 // Draw black text for panel number
                 ctx.fillStyle = 'black';
-                ctx.fillText(panelNumber, x + panelActualWidth / 2 - 5, y + panelActualLength / 2 + 5);
+                //ctx.fillText(panelNumber, x +padding+ panelActualWidth / 2 - 5, y + padding+panelActualLength / 2 + 5);
+                const textWidth = ctx.measureText(panelNumber).width;
+                const textHeight = 10 / scaleFactor; // Approximate text height
+                ctx.fillText(panelNumber, 
+                    x + padding + panelActualWidth / 2 - textWidth / 2,
+                    y + padding + panelActualLength / 2 + textHeight / 2
+                );
 
                 panelNumber++;
             }
             }
 
-            // Redraw the joist lines
-            const joistSpacing = parseInt(document.getElementById('joist-spacing').value);
+            /*
+            // Redraw the joist lines - very old code
+            const joistSpacing = parseFloat(document.getElementById('joist-spacing').value);
             const joistDirection = document.getElementById('joist-direction').value;
 
             ctx.strokeStyle = 'red';
@@ -294,6 +387,41 @@
                 ctx.stroke();
             }
             }
+            */
+
+            /* latest joist draw code
+            // Draw the joist lines
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 1/scaleFactor;
+
+            const joistSpacing = parseFloat(document.getElementById('joist-spacing').value);
+            const joistDirection = document.getElementById('joist-direction').value;
+
+            // Retrieve width and length values from input fields
+            const width = parseFloat(document.getElementById('width').value);
+            const length = parseFloat(document.getElementById('length').value);
+
+            if (joistDirection === 'vertical') {
+            for (let x = joistSpacing; x < width; x += joistSpacing) {
+                console.log(`joist x interation: ${x}`);
+                ctx.beginPath();
+                //ctx.moveTo((padding /scaleFactor)+ x, padding / scaleFactor);
+                //ctx.lineTo((padding /scaleFactor)+ x, (padding / scaleFactor) + length);
+                ctx.moveTo((padding )+ x+40, padding );
+                ctx.lineTo((padding )+ x+40, (padding ) + length);
+                ctx.stroke();
+            }
+            } else if (joistDirection === 'horizontal') {
+            for (let y = joistSpacing; y < length; y += joistSpacing) {
+                console.log(`joist y interation: ${y}`);
+                ctx.beginPath();
+                ctx.moveTo(padding / scaleFactor, (padding /scaleFactor)+ y);
+                ctx.lineTo((padding / scaleFactor) + width, (padding/scaleFactor) + y);
+                ctx.stroke();
+            }
+            }
+            */
+
 
             // Display the number of panels in the table
             const numberOfPanelsCell = document.querySelector('#total-number-of-panels-row td:nth-child(2)');
