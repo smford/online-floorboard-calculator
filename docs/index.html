@@ -347,31 +347,6 @@
             }
             }
 
-            /*
-            // Redraw the joist lines - very old code
-            const joistSpacing = parseFloat(document.getElementById('joist-spacing').value);
-            const joistDirection = document.getElementById('joist-direction').value;
-
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 1;
-
-            if (joistDirection === 'vertical') {
-            for (let x = padding + joistSpacing; x < padding + floorWidth; x += joistSpacing) {
-                ctx.beginPath();
-                ctx.moveTo(x, padding);
-                ctx.lineTo(x, padding + floorLength);
-                ctx.stroke();
-            }
-            } else if (joistDirection === 'horizontal') {
-            for (let y = padding + joistSpacing; y < padding + floorLength; y += joistSpacing) {
-                ctx.beginPath();
-                ctx.moveTo(padding, y);
-                ctx.lineTo(padding + floorWidth, y);
-                ctx.stroke();
-            }
-            }
-            */
-
             // Display the number of panels in the table
             const numberOfPanelsCell = document.querySelector('#total-number-of-panels-row td:nth-child(2)');
             numberOfPanelsCell.textContent = `${panelNumber - 1}`;
